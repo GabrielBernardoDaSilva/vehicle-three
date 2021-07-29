@@ -232,9 +232,10 @@ const App = () => {
       (x) => x.BayTypeId === baysInTruck[baysInTruck.length - 1].BayTypeId
     );
     posX -= bayTypeDelete.BayWidth;
-    const axle = axlesInTruck3d.find(x => x.BayLayer === baysInTruck.length - 1);
-    if (axle !== undefined)
-      removeAxle3d()
+    const axle = axlesInTruck3d.find(
+      (x) => x.BayLayer === baysInTruck.length - 1
+    );
+    if (axle !== undefined) removeAxle3d();
     const mesh1 = scene.children.find((x) => x.name === `bay_${bayIndex}`);
     const line1 = scene.children.find((x) => x.name === `line_${bayIndex}`);
     baysInTruck.pop();
@@ -343,6 +344,7 @@ const App = () => {
   };
 
   const addAxle3d = () => {
+    if (baysInTruck.length === 0) return;
     const bayRelative = baysInTruck[baysInTruck.length - 1];
     const indexOfRelativeBay = baysInTruck.length - 1;
     let posAxleX = bayRelative.BayX;
@@ -450,6 +452,7 @@ const App = () => {
   };
 
   const removeAxle3d = () => {
+    if (axlesInTruck3d.length === 0) return;
     if (axleIndex !== 0) axleIndex--;
     const removeDiv = document.getElementById(`div_axle_${axleIndex}`);
     if (divMove.children.length > 0) divMove.removeChild(removeDiv);
