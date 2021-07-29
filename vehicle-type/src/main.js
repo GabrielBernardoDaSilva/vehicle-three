@@ -232,7 +232,9 @@ const App = () => {
       (x) => x.BayTypeId === baysInTruck[baysInTruck.length - 1].BayTypeId
     );
     posX -= bayTypeDelete.BayWidth;
-
+    const axle = axlesInTruck3d.find(x => x.BayLayer === baysInTruck.length - 1);
+    if (axle !== undefined)
+      removeAxle3d()
     const mesh1 = scene.children.find((x) => x.name === `bay_${bayIndex}`);
     const line1 = scene.children.find((x) => x.name === `line_${bayIndex}`);
     baysInTruck.pop();
@@ -263,7 +265,7 @@ const App = () => {
         const object = gltf.scene;
         object.name = "truck_cabin";
         object.traverse((child) => {
-          child.position.set(cubePivo.position.x - 1.5, -1.7, 0.5);
+          child.position.set(cubePivo.position.x - 1.5, -1.75, 0.5);
           child.scale.set(0.32, 0.32, 0.32);
           child.rotateY((Math.PI / 180) * 180);
           if (child instanceof Mesh) {
@@ -399,7 +401,12 @@ const App = () => {
     const axle3d = scene.children.find((x) => x.name === `axle_${axleId}`);
     const indexOfActualBayRelative = axle.BayLayer;
     const indexOfNewBayRelative = axle.BayLayer + 2;
-    if (indexOfNewBayRelative > baysInTruck.length) return;
+    if (
+      axlesInTruck3d.filter((x) => x.BayLayer === indexOfNewBayRelative)
+        .length > 0 ||
+      indexOfNewBayRelative > baysInTruck.length
+    )
+      return;
     const oldBay = baysInTruck[indexOfActualBayRelative];
     const bay = baysInTruck[indexOfNewBayRelative];
     const posY =
@@ -420,7 +427,12 @@ const App = () => {
     const axle3d = scene.children.find((x) => x.name === `axle_${axleId}`);
     const indexOfActualBayRelative = axle.BayLayer;
     const indexOfNewBayRelative = axle.BayLayer - 2;
-    if (indexOfNewBayRelative < 1) return;
+    if (
+      axlesInTruck3d.filter((x) => x.BayLayer === indexOfNewBayRelative)
+        .length > 0 ||
+      indexOfNewBayRelative < 1
+    )
+      return;
     const oldBay = baysInTruck[indexOfActualBayRelative];
     const bay = baysInTruck[indexOfNewBayRelative];
     const posY =
@@ -463,7 +475,6 @@ const App = () => {
       item.translateY(maxPosAxleY * -1);
       item.translateZ(maxPosAxleY / 2);
     });
- 
   };
 
   add.onclick = () => {
